@@ -1,34 +1,3 @@
-function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
-  if (shouldResolve) {
-    // Fulfill
-  } else {
-    // Reject
-  }
-}
-
-
-
-// В HTML есть разметка формы, в поля которой пользователь будет вводить первую задержку в миллисекундах, шаг увеличения задержки для каждого промиса после первого и количество промисов которое необходимо создать.
-
-// <form class="form">
-//   <label>
-//     First delay (ms)
-//     <input type="number" name="delay" required />
-//   </label>
-//   <label>
-//     Delay step (ms)
-//     <input type="number" name="step" required />
-//   </label>
-//   <label>
-//     Amount
-//     <input type="number" name="amount" required />
-//   </label>
-//   <button type="submit">Create promises</button>
-// </form>
-
-// Напиши скрипт, который при сабмите формы вызывает функцию createPromise(position, delay) столько раз, сколько ввели в поле amount. При каждом вызове передай ей номер создаваемого промиса (position) и задержку учитывая введенную пользователем первую задержку (delay) и шаг (step).
-
 // function createPromise(position, delay) {
 //   const shouldResolve = Math.random() > 0.3;
 //   if (shouldResolve) {
@@ -37,19 +6,44 @@ function createPromise(position, delay) {
 //     // Reject
 //   }
 // }
+import Notiflix from 'notiflix';
 
-// Дополни код функции createPromise так, чтобы она возвращала один промис, который выполянется или отклоняется через delay времени. Значением промиса должен быть объект, в котором будут свойства position и delay со значениями одноименных параметров. Используй начальный код функции для выбора того, что нужно сделать с промисом - выполнить или отклонить.
+    function createPromise(position, delay) {
+      return new Promise((resolve, reject) => {
+        const shouldResolve = Math.random() > 0.3;
+        setTimeout(() => {
+          if (shouldResolve) {
+            resolve({ position, delay });
+          } else {
+            reject({ position, delay });
+          }
+        }, delay);
+      });
+    }
 
-// createPromise(2, 1500)
-//   .then(({ position, delay }) => {
-//     console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-//   })
-//   .catch(({ position, delay }) => {
-//     console.log(`❌ Rejected promise ${position} in ${delay}ms`);
-//   });
+    const form = document.querySelector('.form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-// Библиотека уведомлений
-// ВНИМАНИЕ
-// Этот функционал не обязателен при сдаче задания, но будет хорошей дополнительной практикой.
+      const delayInput = document.querySelector('input[name="delay"]');
+      const stepInput = document.querySelector('input[name="step"]');
+      const amountInput = document.querySelector('input[name="amount"]');
 
-// Для отображения уведомлений пользователю вместо console.log() используй библиотеку notiflix.
+      const initialDelay = parseInt(delayInput.value);
+      const step = parseInt(stepInput.value);
+      const amount = parseInt(amountInput.value);
+
+      let currentDelay = initialDelay;
+
+      for (let i = 1; i <= amount; i++) {
+        createPromise(i, currentDelay)
+          .then(({ position, delay }) => {
+            Notiflix.Notify.Success(`Fulfilled promise ${position} in ${delay}ms`);
+          })
+          .catch(({ position, delay }) => {
+            Notiflix.Notify.Failure(`❌ Rejected promise ${position} in ${delay}ms`);
+          });
+
+        currentDelay += step;
+      }
+    });
