@@ -1,7 +1,7 @@
-import flatpickr from "flatpickr";
+
 
 import Notiflix from 'notiflix';
-
+import flatpickr from "flatpickr";
 
 const data = {
   days:document.querySelector("[data-days]"),
