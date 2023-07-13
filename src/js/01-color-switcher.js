@@ -3,13 +3,14 @@ const startEl = document.querySelector('button[data-start]');
 const stopEl = document.querySelector('button[data-stop]');
 
 const bodyEl = document.body;
+let  colorBody = null;
 
 
-stopEl.disabled = true;
 function getRandomHexColor() {
     return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0)}`;
 }
 
+stopEl.disabled = true;
 startEl.addEventListener('click', onClickStart);
 stopEl.addEventListener('click', onClickStop);
 
