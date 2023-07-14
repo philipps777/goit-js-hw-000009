@@ -5,13 +5,22 @@ import "flatpickr/dist/flatpickr.min.css";
 import Notiflix from 'notiflix';
 
 
-const data = {
+const res = {
   days:document.querySelector("[data-days]"),
   hours:document.querySelector("[data-hours]"),
   minutes:document.querySelector("[data-minutes]"),
   seconds:document.querySelector("[data-seconds]")
 }
-const noActiveBtn = document.querySelector("[data-start]").setAttribute("disabled", "disabled");
+
+function updateCountdownElements(res, remainingTime) {
+  res.days.textContent = addLeadingZero(remainingTime.days);
+  res.hours.textContent = addLeadingZero(remainingTime.hours);
+  res.minutes.textContent = addLeadingZero(remainingTime.minutes);
+  res.seconds.textContent = addLeadingZero(remainingTime.seconds);
+}
+
+const activeBtn = document.querySelector("[data-start]");
+activeBtn.setAttribute("disabled", "disabled")
 
 function addLeadingZero(value) {
     return String(value).padStart(2, '0');
@@ -43,45 +52,38 @@ function addLeadingZero(value) {
     time_24hr: true,
     defaultDate: new Date(),
     minuteIncrement: 1,
-    onChange(selectedDates) {
-      const selectedDate = selectedDates[0];
-
-   
-      if (selectedDate >= new Date()) {
-        document.querySelector("[data-start]").removeAttribute("disabled");
+    onChange([selectedDate]) {
+      
+      if (selectedDate >= Date.now()) {
+        activeBtn.removeAttribute("disabled");
       } else {
-        document.querySelector("[data-start]").setAttribute("disabled", "disabled");
+        activeBtn.setAttribute("disabled", "disabled");
         Notiflix.Notify.failure("Please choose a date in the future");
       }
     },
   });
 
  
-  const startButton = document.querySelector("[data-start]");
-  startButton.addEventListener("click", () => {
+ 
+  activeBtn.addEventListener("click", () => {
    
     const selectedDate = datetimePicker.selectedDates[0];
   
-    const currentDate = new Date();
+    const currentDate = Date.now();
    
     const timeDifference = selectedDate - currentDate;
 
    
     const timerInterval = setInterval(() => {
       
-      if (new Date() >= selectedDate) {
+      if (Date.now() >= selectedDate) {
         clearInterval(timerInterval);       
         return;
       }
-
-
       
-      const remainingTime = convertMs(selectedDate - new Date());
+      const remainingTime = convertMs(selectedDate - Date.now());
 
-      data.days.textContent = addLeadingZero(remainingTime.days);
-      data.hours.textContent = addLeadingZero(remainingTime.hours);
-      data.minutes.textContent = addLeadingZero(remainingTime.minutes);
-      data.seconds.textContent = addLeadingZero(remainingTime.seconds);
+      updateCountdownElements(res, remainingTime);
      
     }, 1000);
   });

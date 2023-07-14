@@ -14,16 +14,20 @@ stopEl.disabled = true;
 startEl.addEventListener('click', onClickStart);
 stopEl.addEventListener('click', onClickStop);
 
+function setButtonStates(startDisabled, stopDisabled) {
+    startEl.disabled = startDisabled;
+    stopEl.disabled = stopDisabled;
+  }
+
 function onClickStart() {  
-    startEl.disabled = true;   
-    stopEl.disabled = false;    
+    setButtonStates(true, false);  
     colorBody = setInterval(function() {
         bodyEl.style.backgroundColor = getRandomHexColor();
             }, 1000);
 }
 
 function onClickStop() {
-    startEl.disabled = false;
-    stopEl.disabled = true; 
+    setButtonStates(false, true);
     clearInterval(colorBody);
 }
+
